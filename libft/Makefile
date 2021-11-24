@@ -20,7 +20,7 @@ HEADERS_FILES = libft.h
 
 HEADERS = ${addprefix ${HEADERS_DIR}, ${HEADERS_FILES}}
 
-CC = gcc
+CC = cc
 
 RM = rm -f
 
@@ -35,13 +35,12 @@ SOURCES = ft_isalpha.c ft_isdigit.c ft_isalnum.c ft_isascii.c ft_isprint.c\
 
 BONUS_SOURCES = ft_lstnew_bonus.c ft_lstadd_front_bonus.c ft_lstsize_bonus.c\
 	ft_lstlast_bonus.c ft_lstadd_back_bonus.c ft_lstdelone_bonus.c\
-	ft_lstclear_bonus.c ft_lstiter_bonus.c ft_lstmap_bonus.c
+	ft_lstclear_bonus.c ft_lstiter_bonus.c 
+	# ft_lstmap_bonus.c
 
-OBJS = $(patsubst %.c, %.o, ${SOURCES})
+OBJS = $(patsubst %.c, %.o, ${SOURCES} ${BONUS_SOURCES})
 
-OBJS_BONUS = $(patsubst %.c, %.o, ${BONUS_SOURCES})
-
-DFILES = $(patsubs %.c,%.d,${SOURCES})
+# OBJS_BONUS = $(patsubst %.c, %.o, ${BONUS_SOURCES})
 
 all:	${NAME}
 
@@ -51,8 +50,8 @@ all:	${NAME}
 ${NAME}:	${OBJS}
 	ar rcs ${NAME} $?
 
-bonus:
-	make OBJS="${OBJS_BONUS} ${OBJS}" all
+# bonus:
+# 	make OBJS="${OBJS_BONUS} ${OBJS}" all
 
 clean:
 	${RM} -f ${OBJS} ${OBJS_BONUS}
