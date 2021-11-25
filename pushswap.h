@@ -12,7 +12,8 @@
 
 #ifndef PUSHSWAP_H
 #define PUSHSWAP_H
-#include <stdlib.h>
-#include <unistd.h>
-#include "./libft/libft.h"
+# include <stdlib.h>
+# include <unistd.h>
+# include "./libft/libft.h"
+
 #endif
