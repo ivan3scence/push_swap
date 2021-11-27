@@ -6,7 +6,7 @@
 /*   By: sdonny <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/23 13:42:05 by sdonny            #+#    #+#             */
-/*   Updated: 2021/11/23 16:31:45 by sdonny           ###   ########.fr       */
+/*   Updated: 2021/11/27 16:40:41 by sdonny           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -266,7 +266,7 @@ void	ft_sort_two(t_list **a_stack, char *str)
 		return ;
 	return (op_s(a_stack, str));
 }
-
+/*
 void	ft_sort_five(t_list **a_stack, t_list **b_stack, int argc)
 {
 	while (argc-- > 5)
@@ -329,7 +329,7 @@ void	ft_try(t_list **a_stack, t_list **b_stack, int quantity)
 	ft_sort_two(a_stack, "a");
 	return (ft_try_second_part(a_stack, b_stack, quantity));
 }
-
+*/
 
 void	swap(int *p, int *q)
 {
@@ -379,6 +379,57 @@ int	median(t_list **stack, int n)
 	}
 	return (a[n / 2]);
 }
+
+int	ft_push_median(t_list **a_stack, t_list **b_stack, int quantity, int median)
+{
+
+	return median;
+
+
+void	ft_maxmin(t_list **stack, int *max, int *min)
+{
+	t_list	*elem;
+
+	elem = *stack;
+	*max = -2147483649;
+	*min = 2147483648;
+	while (elem)
+	{
+		if (elem->content < *min)
+			*min = elem->content;
+		else if (elem->content > *max)  	
+        	*max = elem->content;
+		elem = elem->content;
+	}
+	return ;
+}
+
+void	ft_big_sort(t_list **a_stack, t_list **b_stack, int quantity)
+{
+	t_list	*elem;
+	long int		*max;
+	long int 	*min;
+	int		mid;
+
+	elem = *a_stack;
+	ft_maxmin(a_stack, max, min);
+	mid = ft_push_median(a_stack, b_stack, quantity, median(a_stack, quantity));
+	while (elem)
+	{
+		if (elem->content != max && elem->content != min && elem->content < mid)
+			op_p(b_stack, a_stack, "b");
+		else if (elem->content != max && elem->content != min && elem->content > mid)
+		{
+			op_r(b_stack, "b");
+			op_p(b_stack, a_stack, "b");
+		}
+		elem = elem->next;
+	}
+	ft_second_part(a_stack, b_stack, quantity);
+}
+
+
+
 
 // void	ft_sort_hundred(t_list **a_stack, t_list **b_stack, int argc)
 // {
