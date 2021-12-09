@@ -104,107 +104,7 @@ static t_list	**validate(int argc, char **argv)
 	return (a_stack);
 }
 
-void	op_s(t_list **stack, char *str)
-{
-	int	tmp;
 
-	if (!(stack && *stack && (*stack)->next))
-		return ;
-	tmp = (*stack)->content;
-	(*stack)->content = (*stack)->next->content;
-	(*stack)->next->content = tmp;
-	if (!ft_strncmp(str, "ss", 2))
-		return (ft_putstr_fd("ss\n", 1));
-	if (str)
-	{
-		ft_putchar_fd('s', 1);
-		ft_putstr_fd(str, 1);
-		ft_putchar_fd('\n', 1);
-	}
-}
-
-void	op_ss(t_list **a, t_list **b)
-{
-	op_s(a, NULL);
-	op_s(b, "ss");
-}
-
-void	op_p(t_list **stack_to, t_list **stack_from, char *str)
-{
-	t_list	*tmp;
-
-	if (!(stack_from && (*stack_from)))
-		return ;
-	tmp = *stack_from;
-	*stack_from = tmp->next;
-	ft_lstadd_front(stack_to, tmp);
-	ft_putchar_fd('p', 1);
-	ft_putstr_fd(str, 1);
-	ft_putchar_fd('\n', 1);
-}
-
-void	op_r(t_list **stack, char *str)
-{
-	t_list	*tmp;
-
-	if (!(stack && *stack))
-		return ;
-	tmp = *stack;
-	*stack = tmp->next;
-	tmp->next = NULL;
-	ft_lstadd_back(stack, tmp);
-	tmp = NULL;
-	if (!ft_strncmp(str, "rr", 2))
-		return (ft_putstr_fd("rr\n", 1));
-	if (str)
-	{
-		ft_putchar_fd('r', 1);
-		ft_putstr_fd(str, 1);
-		ft_putchar_fd('\n', 1);
-	}
-}
-
-void	op_rr(t_list **a, t_list **b)
-{
-	op_r(a, NULL);
-	op_r(b, "rr");
-}
-
-void	ft_lstprev(t_list **stack, t_list *elem)
-{
-	t_list	*tmp;
-
-	tmp = *stack;
-	while (tmp->next != elem)
-		tmp = tmp->next;
-	tmp->next = NULL;
-}
-
-void	op_r_r(t_list **stack, char *str)
-{
-	t_list	*tmp;
-
-	if (!(stack && *stack))
-		return ;
-	tmp = ft_lstlast(*stack);
-	ft_lstadd_front(stack, ft_lstnew(tmp->content));
-	ft_lstdelone(tmp, NULL);
-	ft_lstprev(stack, tmp);
-	if (!ft_strncmp(str, "rrr", 3))
-		return (ft_putstr_fd("rrr\n", 1));
-	if (*str)
-	{
-		ft_putstr_fd("rr", 1);
-		ft_putstr_fd(str, 1);
-		ft_putchar_fd('\n', 1);
-	}
-}
-
-void	op_rrr(t_list **a, t_list **b)
-{
-	op_r_r(a, NULL);
-	op_r_r(b, "rrr");
-}
 
 void	lst_print(t_list **stack)
 {
@@ -358,7 +258,7 @@ int	*ft_array(t_list **stack, int n)
 	}
 	return (a);
 }
-
+/*
 int	median(t_list **stack, int n)
 { 
 	int	*a;
@@ -384,26 +284,33 @@ int	ft_push_median(t_list **a_stack, t_list **b_stack, int quantity, int median)
 {
 
 	return median;
+*/
 
 
-void	ft_maxmin(t_list **stack, int *max, int *min)
+int	ft_min(t_list **stack)
 {
 	t_list	*elem;
+	int		min;
+	int		count;
+	int		c;
 
+	count = 0;
 	elem = *stack;
-	*max = -2147483649;
-	*min = 2147483648;
-	while (elem)
+	min = 2147483647;
+	if (!elem)
+		return (-1);
+	while (elem && ++count)
 	{
-		if (elem->content < *min)
-			*min = elem->content;
-		else if (elem->content > *max)  	
-        	*max = elem->content;
-		elem = elem->content;
+		if (elem->content < min)
+		{
+			min = elem->content;
+			c = count - 1;
+		}
+		elem = elem->next;
 	}
-	return ;
+	return (c);
 }
-
+/*
 void	ft_big_sort(t_list **a_stack, t_list **b_stack, int quantity)
 {
 	t_list	*elem;
@@ -427,7 +334,7 @@ void	ft_big_sort(t_list **a_stack, t_list **b_stack, int quantity)
 	}
 	ft_second_part(a_stack, b_stack, quantity);
 }
-
+*/
 
 
 
@@ -439,6 +346,31 @@ void	ft_big_sort(t_list **a_stack, t_list **b_stack, int quantity)
 // {
 // 	return ;
 // }
+
+void	push_swap_min(t_list **a_stack, t_list ** b_stack)
+{
+	int	min;
+	int	lstsize;
+
+	while (*a_stack)
+	{
+		lstsize = ft_lstsize(*a_stack);
+		min = ft_min(a_stack);
+		if (lstsize > 1 && (min) * 2 > lstsize)
+		{
+			while (min++ < lstsize)
+				op_r_r(a_stack, "a");
+		}
+		else if (lstsize > 1)
+		{
+			while (min-- > 0)
+				op_r(a_stack, "a");
+		}
+		op_p(b_stack, a_stack, "b");
+	}
+	while (*b_stack)
+		op_p(a_stack, b_stack, "a");
+}
 
 int	main(int argc, char **argv)
 {
@@ -453,12 +385,15 @@ int	main(int argc, char **argv)
 	if (!b_stack)
 		exit(0);
 	*b_stack = NULL;
-	if (argc == 3)
-		ft_sort_two(a_stack, "a");
-	if (argc == 4)
-		ft_sort_three(a_stack, "a");
-	if (argc < 7)
-		ft_sort_five(a_stack, b_stack, argc);
+	// ft_lstiter(a_stack, put);
+	// ft_putstr_fd("\n", 1);
+	push_swap_min(a_stack, b_stack);
+	// if (argc == 3)
+	// 	ft_sort_two(a_stack, "a");
+	// if (argc == 4)
+	// 	ft_sort_three(a_stack, "a");
+	// if (argc < 7)
+	// 	ft_sort_five(a_stack, b_stack, argc);
 	// if (argc < 102 && argc > 4)
 	// 	ft_sort_hundered(a_stack, b_stack, argc);
 	// if (argc > 101 && argc < 502)
